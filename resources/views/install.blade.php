@@ -449,6 +449,12 @@
                         }
                     }
 
+                    // Manejar contraseña vacía o nula
+                    if (config.password === null || config.password === 'null' || config.password ===
+                        undefined) {
+                        config.password = '';
+                    }
+
                     $.ajax({
                         method: 'POST',
                         headers: {

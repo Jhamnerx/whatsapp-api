@@ -62,10 +62,17 @@ class SettingController extends Controller
         $data = json_decode(json_encode($request->database));
         $error_message = null;
         try {
-            $db = new \mysqli($data->host, $data->username, $data->password, $data->database);
+            // Manejar contraseña nula, vacía o string 'null'
+            $password = $data->password ?? '';
+            if (is_null($password) || $password === 'null' || $password === '' || $password === 'undefined') {
+                $password = '';
+            }
+
+            $db = new \mysqli($data->host, $data->username, $password, $data->database);
             $error_message = $db->connect_errno ? 'Connection Failed .' . $db->connect_error : $error_message;
         } catch (\Throwable $th) {
-            $error_message = 'Connection failed';
+            $error_message = $th->getMessage();
+            // $error_message = 'Connection failed';
         }
         return response()->json(['status' => $error_message ?? 'Success', 'error' => $error_message === null ? false : true,]);
     }
@@ -89,6 +96,14 @@ class SettingController extends Controller
             ]);
             /** CREATE DATABASE CONNECTION STARTS **/
             $db_params = $request->input('database');
+
+            // Manejar contraseña nula, vacía o string 'null'
+            $password = $db_params['password'] ?? '';
+            if (is_null($password) || $password === 'null' || $password === '' || $password === 'undefined') {
+                $password = '';
+            }
+            $db_params['password'] = $password;
+
             Config::set(
                 'database.connections.mysql',
                 array_merge(config('database.connections.mysql'), $db_params)

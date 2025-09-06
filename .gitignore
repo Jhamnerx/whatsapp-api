@@ -1,0 +1,105 @@
+# Laravel
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log*
+yarn-error.log
+
+# IDE
+/.idea
+/.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+/storage/logs/*.log
+stderr.log
+*.log
+
+# Composer
+/vendor/
+composer.lock
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Build outputs
+/public/mix-manifest.json
+/public/css/
+/public/js/
+
+# Laravel specific
+/bootstrap/cache/*
+!/bootstrap/cache/.gitkeep
+/storage/app/*
+!/storage/app/.gitkeep
+!/storage/app/public/
+/storage/framework/cache/*
+!/storage/framework/cache/.gitkeep
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitkeep
+/storage/framework/testing/*
+!/storage/framework/testing/.gitkeep
+/storage/framework/views/*
+!/storage/framework/views/.gitkeep
+
+# Credentials and sensitive files
+/credentials/
+*.pem
+*.key
+*.p12
+*.pfx
+
+# WhatsApp API specific
+/server/database/sessions/
+/server/database/auth/
+*.data.json
+session-*.json
+
+# Backup files
+*.bak
+*.backup
+
+# Cache
+.phpunit.result.cache
+.php_cs.cache
+
+# Testing
+coverage/
+.coverage
+.nyc_output
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Deployment
+deployment.md
+.deployment
+
+# Custom
+/tmp/
+/public/storage
+/public/vendor

@@ -1,30 +1,30 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="language" content="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <meta name="language" content="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('Installation') }}</title>
-    <link rel="icon" href="{{ asset('assets/images/favicon.png') }}">
+    <title><?php echo e(__('Installation')); ?></title>
+    <link rel="icon" href="<?php echo e(asset('assets/images/favicon.png')); ?>">
 
     <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <!-- jQuery -->
 
-    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    <script src="<?php echo e(asset('assets/js/jquery.min.js')); ?>"></script>
 
     <!-- Semantic-UI -->
-    <link rel="stylesheet" href="{{ asset('assets/semantic-ui/semantic.min.2.4.2-rtl.css') }}">
-    <script type="application/javascript" src="{{ asset('assets/semantic-ui/semantic.min.2.4.2.js') }}"></script>
+    <link rel="stylesheet" href="<?php echo e(asset('assets/semantic-ui/semantic.min.2.4.2-rtl.css')); ?>">
+    <script type="application/javascript" src="<?php echo e(asset('assets/semantic-ui/semantic.min.2.4.2.js')); ?>"></script>
 
     <!-- Spacing CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css-spacing/spacing-rtl.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css-spacing/spacing-rtl.css')); ?>">
 
-    {{-- VueJS --}}
-    <script src="{{ asset('assets/vue.min.js') }}"></script>
+    
+    <script src="<?php echo e(asset('assets/vue.min.js')); ?>"></script>
 
     <script type="application/javascript">
 			'use strict';
@@ -213,49 +213,50 @@
         <div class="ui one column grid">
 
             <div class="column">
-                @if ($errors->any())
-                    @foreach ($errors->all() as $error)
+                <?php if($errors->any()): ?>
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="ui negative fluid small message">
                             <i class="times icon close"></i>
-                            {{ $error }}
-                        </div>
-                    @endforeach
-                @endif
+                            <?php echo e($error); ?>
 
-                <form class="ui grid form m-0" method="post" action="{{ route('settings.install_app') }}"
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <?php endif; ?>
+
+                <form class="ui grid form m-0" method="post" action="<?php echo e(route('settings.install_app')); ?>"
                     enctype="multipart/form-data">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <div class="ui fluid card">
                         <div class="content header">
                             <div class="step" :class="{ active: stepIsActive(1) }">
                                 <i class="cog big icon"></i>
                                 <div class="content">
-                                    {{-- <div class="title">{{ __('Requirements') }}</div> --}}
-                                    <div class="description">{{ __('Script requirements') }}</div>
+                                    
+                                    <div class="description"><?php echo e(__('Script requirements')); ?></div>
                                 </div>
                             </div>
 
                             <div class="step" :class="{ active: stepIsActive(2) }">
                                 <i class="cog big icon"></i>
                                 <div class="content">
-                                    {{-- <div class="title">{{ __('General') }}</div> --}}
-                                    <div class="description">{{ __('License Validation') }}</div>
+                                    
+                                    <div class="description"><?php echo e(__('License Validation')); ?></div>
                                 </div>
                             </div>
 
                             <div class="step" :class="{ active: stepIsActive(3) }">
                                 <i class="database big icon"></i>
                                 <div class="content">
-                                    {{-- <div class="title">{{ __('Database') }}</div> --}}
-                                    <div class="description">{{ __('Database settings') }}</div>
+                                    
+                                    <div class="description"><?php echo e(__('Database settings')); ?></div>
                                 </div>
                             </div>
 
                             <div class="step" :class="{ active: stepIsActive(4) }">
                                 <i class="user big icon"></i>
                                 <div class="content">
-                                    {{-- <div class="title">{{ __('Admin access') }}</div> --}}
-                                    <div class="description">{{ __('Admin account') }}</div>
+                                    
+                                    <div class="description"><?php echo e(__('Admin account')); ?></div>
                                 </div>
                             </div>
                         </div>
@@ -266,11 +267,12 @@
                                     <table class="ui celled table">
                                         <tbody>
                                             <tr>
-                                                <td class="six column wide">{{ __('PHP version') }}</td>
-                                                <td>>= {{ $requirements['php']['version'] }}</td>
+                                                <td class="six column wide"><?php echo e(__('PHP version')); ?></td>
+                                                <td>>= <?php echo e($requirements['php']['version']); ?></td>
                                                 <td
-                                                    class="{{ $requirements['php']['version'] <= $requirements['php']['current'] ? 'compatible' : 'not-compatible' }}">
-                                                    {{ $requirements['php']['current'] }}
+                                                    class="<?php echo e($requirements['php']['version'] <= $requirements['php']['current'] ? 'compatible' : 'not-compatible'); ?>">
+                                                    <?php echo e($requirements['php']['current']); ?>
+
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -281,11 +283,12 @@
                                     <table class="ui celled table">
                                         <tbody>
                                             <tr>
-                                                <td class="six column wide">{{ __('MySQL version') }}</td>
-                                                <td>>= {{ $requirements['mysql']['version'] }}</td>
+                                                <td class="six column wide"><?php echo e(__('MySQL version')); ?></td>
+                                                <td>>= <?php echo e($requirements['mysql']['version']); ?></td>
                                                 <td
-                                                    class="{{ $requirements['mysql']['current']['compatible'] ? 'compatible' : 'not-compatible' }}">
-                                                    {{ $requirements['mysql']['current']['distrib'] . ' v' . $requirements['mysql']['current']['version'] }}
+                                                    class="<?php echo e($requirements['mysql']['current']['compatible'] ? 'compatible' : 'not-compatible'); ?>">
+                                                    <?php echo e($requirements['mysql']['current']['distrib'] . ' v' . $requirements['mysql']['current']['version']); ?>
+
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -296,20 +299,20 @@
                                     <table class="ui celled table">
                                         <thead>
                                             <tr>
-                                                <th>{{ __('PHP Extension') }}</th>
-                                                <th class="center aligned">{{ __('Enabled') }}</th>
+                                                <th><?php echo e(__('PHP Extension')); ?></th>
+                                                <th class="center aligned"><?php echo e(__('Enabled')); ?></th>
                                             </tr>
                                         </thead>
 
                                         <tbody>
-                                            @foreach ($requirements['php_extensions'] as $name => $enabled)
+                                            <?php $__currentLoopData = $requirements['php_extensions']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $name => $enabled): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr>
-                                                    <td>{{ ucfirst($name) }}</td>
-                                                    <td class="center aligned">{!! $enabled
+                                                    <td><?php echo e(ucfirst($name)); ?></td>
+                                                    <td class="center aligned"><?php echo $enabled
                                                         ? '<i class="check teal circle large outline icon mx-0"></i>'
-                                                        : '<i class="circle red large outline icon mx-0"></i>' !!}</td>
+                                                        : '<i class="circle red large outline icon mx-0"></i>'; ?></td>
                                                 </tr>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -317,15 +320,15 @@
 
                             <div class="step general" :class="{ active: stepIsActive(2) }">
                                 <div class="field">
-                                    <label>{{ __('License Key') }}</label>
+                                    <label><?php echo e(__('License Key')); ?></label>
                                     <input id="licensekey" type="text" name="licensekey">
                                 </div>
 
                                 <div class="field">
-                                    <label>{{ __('Buyer Email') }}</label>
+                                    <label><?php echo e(__('Buyer Email')); ?></label>
                                     <input id="buyeremail" type="email" name="buyeremail">
                                 </div>
-                                <p>Just skip</p>
+								<p>Just skip</p>
                                 <div class="field">
                                     <button class="ui basic big fluid button rounded mx-0" type="button"
                                         @click="validateLicense($event)">Activate License</button>
@@ -335,52 +338,52 @@
                             </div>
                             <div class="step database" :class="{ active: stepIsActive(3) }">
                                 <div class="field">
-                                    <label>{{ __('Database host') }}</label>
+                                    <label><?php echo e(__('Database host')); ?></label>
                                     <input type="text" required name="database[host]"
-                                        value="{{ old('database.host', request()->input('database.host')) }}">
+                                        value="<?php echo e(old('database.host', request()->input('database.host'))); ?>">
                                 </div>
 
                                 <div class="field">
-                                    <label>{{ __('Database username') }}</label>
+                                    <label><?php echo e(__('Database username')); ?></label>
                                     <input type="text" required name="database[username]"
-                                        value="{{ old('database.username', request()->input('database.username')) }}">
+                                        value="<?php echo e(old('database.username', request()->input('database.username'))); ?>">
                                 </div>
 
                                 <div class="field">
-                                    <label>{{ __('Database password') }}</label>
-                                    <input type="password" name="database[password]"
-                                        value="{{ old('database.password', request()->input('database.password')) }}">
+                                    <label><?php echo e(__('Database password')); ?></label>
+                                    <input type="text" required name="database[password]"
+                                        value="<?php echo e(old('database.password', request()->input('database.password'))); ?>">
                                 </div>
 
                                 <div class="field">
-                                    <label>{{ __('Database name') }}</label>
+                                    <label><?php echo e(__('Database name')); ?></label>
                                     <input type="text" required name="database[database]"
-                                        value="{{ old('database.database', request()->input('database.database')) }}">
+                                        value="<?php echo e(old('database.database', request()->input('database.database'))); ?>">
                                 </div>
 
                                 <div class="field">
                                     <button class="ui basic big fluid button rounded mx-0" type="button"
-                                        @click="testDBConnection($event)">{{ __('Test connection') }}</button>
+                                        @click="testDBConnection($event)"><?php echo e(__('Test connection')); ?></button>
                                 </div>
                             </div>
 
                             <div class="step admin" :class="{ active: stepIsActive(4) }">
                                 <div class="field">
-                                    <label>{{ __('Admin username') }}</label>
+                                    <label><?php echo e(__('Admin username')); ?></label>
                                     <input type="text" required name="admin[username]"
-                                        value="{{ old('admin.username', request()->input('admin.username')) }}">
+                                        value="<?php echo e(old('admin.username', request()->input('admin.username'))); ?>">
                                 </div>
 
                                 <div class="field">
-                                    <label>{{ __('Admin email') }}</label>
+                                    <label><?php echo e(__('Admin email')); ?></label>
                                     <input type="email" required name="admin[email]"
-                                        value="{{ old('admin.email', request()->input('admin.email')) }}">
+                                        value="<?php echo e(old('admin.email', request()->input('admin.email'))); ?>">
                                 </div>
 
                                 <div class="field">
-                                    <label>{{ __('Admin password') }}</label>
+                                    <label><?php echo e(__('Admin password')); ?></label>
                                     <input type="text" required name="admin[password]"
-                                        value="{{ old('admin.password', request()->input('admin.password')) }}">
+                                        value="<?php echo e(old('admin.password', request()->input('admin.password'))); ?>">
                                 </div>
 
 
@@ -389,11 +392,11 @@
 
                         <div class="content footer ">
                             <button class="ui d-none  large previeus button ml-0 mr-auto" @click="navigateSteps(-1)"
-                                type="button" :class="{ disabled: stepIsActive(1) }">{{ __('Previous') }}</button>
+                                type="button" :class="{ disabled: stepIsActive(1) }"><?php echo e(__('Previous')); ?></button>
                             <button class="ui large next button ml-auto mr-0" @click="navigateSteps(1)"
-                                type="button" v-if="step <= 3">{{ __('Next') }}</button>
+                                type="button" v-if="step <= 3"><?php echo e(__('Next')); ?></button>
                             <button class="ui large yellow button ml-auto mr-0" type="button" @click="submitForm"
-                                v-if="step == 4">{{ __('Submit') }}</button>
+                                v-if="step == 4"><?php echo e(__('Submit')); ?></button>
                         </div>
                     </div>
 
@@ -431,7 +434,7 @@
                     $('form').submit()
                 },
                 testDBConnection: function(e) {
-
+                   
                     $(e.target).toggleClass('loading', true);
 
                     var formData = $('form').serializeArray();
@@ -454,7 +457,7 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        url: '{{ route('connectDB') }}',
+                        url: '<?php echo e(route('connectDB')); ?>',
                         data: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                             database: config,
@@ -463,7 +466,7 @@
                         success: (r) => {
                             $(e.target).toggleClass('loading', false);
                             alert(r.status)
-                            if (!r.error) {
+                            if(!r.error) {
                                 this.navigateSteps(1);
                             }
                         },
@@ -490,7 +493,7 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        url: '{{ route('activateLicense') }}',
+                        url: '<?php echo e(route('activateLicense')); ?>',
                         data: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                             license: license,
@@ -536,3 +539,4 @@
 </body>
 
 </html>
+<?php /**PATH /home/topupgtc/wapi.topupgt.com/resources/views/install.blade.php ENDPATH**/ ?>

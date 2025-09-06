@@ -1,6 +1,6 @@
 # WhatsApp API - Guía de Instalación
 
-Esta guía te ayudará a instalar el sistema WhatsApp API en **AlmaLinux** y **Ubuntu** con los requisitos necesarios.
+Esta guía te ayudará a instalar el sistema WhatsApp API en **Ubuntu** y **AlmaLinux** con los requisitos necesarios.
 
 ## 📋 Requisitos del Sistema
 
@@ -10,112 +10,6 @@ Esta guía te ayudará a instalar el sistema WhatsApp API en **AlmaLinux** y **U
 - **MySQL/MariaDB**: v8.0+ / v10.6+
 - **Nginx/Apache**: Servidor web
 - **Git**: Para clonar el repositorio
-
----
-
-## 🐧 Instalación en AlmaLinux 9
-
-### 1. Actualizar el sistema
-
-```bash
-sudo dnf update -y
-sudo dnf install -y epel-release
-```
-
-### 2. Instalar Node.js 19
-
-```bash
-# Instalar Node.js 19 usando NodeSource
-curl -fsSL https://rpm.nodesource.com/setup_19.x | sudo bash -
-sudo dnf install -y nodejs
-
-# Verificar instalación
-node --version
-npm --version
-```
-
-### 3. Instalar PHP 8.1 y extensiones
-
-```bash
-# Habilitar repositorio Remi
-sudo dnf install -y https://rpms.remirepo.net/enterprise/remi-release-9.rpm
-
-# Instalar PHP 8.1 y extensiones necesarias
-sudo dnf module reset php -y
-sudo dnf module enable php:remi-8.1 -y
-sudo dnf install -y php php-cli php-fpm php-mysqlnd php-zip php-devel \
-    php-gd php-mcrypt php-mbstring php-curl php-xml php-pear \
-    php-bcmath php-json php-fileinfo php-openssl php-tokenizer \
-    php-xmlwriter php-simplexml php-dom php-pdo php-pdo_mysql \
-    php-intl php-soap php-gmp php-exif
-
-# Verificar instalación
-php --version
-```
-
-### 4. Instalar Composer
-
-```bash
-# Descargar e instalar Composer
-curl -sS https://getcomposer.org/installer | php
-sudo mv composer.phar /usr/local/bin/composer
-sudo chmod +x /usr/local/bin/composer
-
-# Verificar instalación
-composer --version
-```
-
-### 5. Instalar MySQL/MariaDB
-
-```bash
-# Instalar MariaDB
-sudo dnf install -y mariadb-server mariadb
-
-# Iniciar y habilitar el servicio
-sudo systemctl start mariadb
-sudo systemctl enable mariadb
-
-# Configurar seguridad
-sudo mysql_secure_installation
-```
-
-### 6. Instalar Nginx
-
-```bash
-# Instalar Nginx
-sudo dnf install -y nginx
-
-# Iniciar y habilitar el servicio
-sudo systemctl start nginx
-sudo systemctl enable nginx
-
-# Configurar firewall
-sudo firewall-cmd --permanent --add-service=http
-sudo firewall-cmd --permanent --add-service=https
-sudo firewall-cmd --reload
-```
-
-### 6. Alternativa: Instalar Apache (httpd)
-
-```bash
-# Instalar Apache
-sudo dnf install -y httpd
-
-# Iniciar y habilitar el servicio
-sudo systemctl start httpd
-sudo systemctl enable httpd
-
-# Configurar firewall
-sudo firewall-cmd --permanent --add-service=http
-sudo firewall-cmd --permanent --add-service=https
-sudo firewall-cmd --reload
-```
-
-### 7. Instalar Git
-
-```bash
-sudo dnf install -y git
-```
 
 ---
 
@@ -170,19 +64,7 @@ sudo apt install -y php8.1 php8.1-cli php8.1-fpm php8.1-mysql \
 php --version
 ```
 
-### 4. Instalar Composer
-
-```bash
-# Descargar e instalar Composer
-curl -sS https://getcomposer.org/installer | php
-sudo mv composer.phar /usr/local/bin/composer
-sudo chmod +x /usr/local/bin/composer
-
-# Verificar instalación
-composer --version
-```
-
-### 5. Instalar MySQL
+### 4. Instalar MySQL
 
 ```bash
 # Instalar MySQL Server
@@ -196,7 +78,7 @@ sudo systemctl start mysql
 sudo systemctl enable mysql
 ```
 
-### 6. Instalar Nginx
+### 5. Instalar Nginx
 
 ```bash
 # Instalar Nginx
@@ -210,10 +92,130 @@ sudo systemctl enable nginx
 sudo ufw allow 'Nginx Full'
 ```
 
-### 7. Instalar Git
+### 6. Instalar Git
 
 ```bash
 sudo apt install -y git
+```
+
+---
+
+## 🐧 Instalación en AlmaLinux 9
+
+### 1. Actualizar el sistema
+
+```bash
+sudo dnf update -y
+sudo dnf install -y epel-release
+```
+
+### 2. Instalar Node.js 19
+
+```bash
+# Instalar Node.js 19 usando NodeSource
+curl -fsSL https://rpm.nodesource.com/setup_19.x | sudo bash -
+sudo dnf install -y nodejs
+
+# Verificar instalación
+node --version
+npm --version
+```
+
+### 3. Instalar PHP 8.1 y extensiones
+
+```bash
+# Habilitar repositorio Remi
+sudo dnf install -y https://rpms.remirepo.net/enterprise/remi-release-9.rpm
+
+# Instalar PHP 8.1 y extensiones necesarias
+sudo dnf module reset php -y
+sudo dnf module enable php:remi-8.1 -y
+sudo dnf install -y php php-cli php-fpm php-mysqlnd php-zip php-devel \
+    php-gd php-mcrypt php-mbstring php-curl php-xml php-pear \
+    php-bcmath php-json php-fileinfo php-openssl php-tokenizer \
+    php-xmlwriter php-simplexml php-dom php-pdo php-pdo_mysql \
+    php-intl php-soap php-gmp php-exif
+
+# Verificar instalación
+php --version
+```
+
+### 4. Instalar MySQL/MariaDB
+
+```bash
+# Instalar MariaDB
+sudo dnf install -y mariadb-server mariadb
+
+# Iniciar y habilitar el servicio
+sudo systemctl start mariadb
+sudo systemctl enable mariadb
+
+# Configurar seguridad
+sudo mysql_secure_installation
+```
+
+### 5. Instalar Nginx
+
+```bash
+# Instalar Nginx
+sudo dnf install -y nginx
+
+# Iniciar y habilitar el servicio
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+# Configurar firewall
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --permanent --add-service=https
+sudo firewall-cmd --reload
+```
+
+### 5. Alternativa: Instalar Apache (httpd)
+
+```bash
+# Instalar Apache
+sudo dnf install -y httpd
+
+# Iniciar y habilitar el servicio
+sudo systemctl start httpd
+sudo systemctl enable httpd
+
+# Configurar firewall
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --permanent --add-service=https
+sudo firewall-cmd --reload
+```
+
+### 6. Instalar Git
+
+```bash
+sudo dnf install -y git
+```
+
+---
+
+## 🛠️ Instalación de Herramientas Generales
+
+### Instalar Composer (Ubuntu/AlmaLinux)
+
+```bash
+# Descargar e instalar Composer
+curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer
+sudo chmod +x /usr/local/bin/composer
+
+# Verificar instalación
+composer --version
+```
+
+### Instalar PM2 (Ubuntu/AlmaLinux)
+
+```bash
+# Instalar PM2 globalmente
+npm install -g pm2
+
+# Verificar instalación
+pm2 --version
 ```
 
 ---
@@ -228,8 +230,8 @@ cd /var/www/
 
 # Clonar el proyecto (reemplaza con tu repositorio)
 sudo git clone https://github.com/tu-usuario/whatsapp-api.git
-sudo chown -R $USER:$USER /var/www/html/whatsapp-api
-cd /var/www/html/whatsapp-api
+sudo chown -R $USER:$USER whatsapp-api
+cd whatsapp-api
 ```
 
 ### 2. Instalar dependencias de PHP
@@ -251,14 +253,15 @@ sudo npm install --unsafe-perm=true
 
 ### 4. Configurar el proyecto
 
-````bash
+```bash
 # Copiar archivo de configuración
 cp .env.example .env
 
 # Generar clave de aplicación
 php artisan key:generate
+```
 
-### Configurar permisos
+### 5. Configurar permisos
 
 ```bash
 # Para Nginx (Ubuntu)
@@ -272,11 +275,9 @@ sudo chown -R apache:apache storage bootstrap/cache
 
 # Permisos generales
 sudo chmod -R 775 storage bootstrap/cache
-````
+```
 
-````
-
-### 5. Configurar base de datos
+### 6. Configurar base de datos
 
 ```bash
 # Editar archivo .env con tus datos de base de datos
@@ -287,7 +288,7 @@ php artisan migrate
 
 # Ejecutar seeders (si existen)
 php artisan db:seed
-````
+```
 
 ---
 
@@ -405,10 +406,10 @@ sudo nano /etc/httpd/conf/httpd.conf
 
 ```apache
 # Cambiar la línea DocumentRoot
-DocumentRoot "/var/www/html/public"
+DocumentRoot "/var/www/whatsapp-api/public"
 
 # Configurar permisos del directorio
-<Directory "/var/www/html/public">
+<Directory "/var/www/whatsapp-api/public">
     AllowOverride All
     # Allow open access:
     Require all granted
@@ -428,9 +429,9 @@ sudo nano /etc/httpd/conf.d/whatsapp-api.conf
 <VirtualHost *:80>
     ServerName tu-dominio.com
     ServerAlias www.tu-dominio.com
-    DocumentRoot /var/www/html/public
+    DocumentRoot /var/www/whatsapp-api/public
 
-    <Directory /var/www/html/public>
+    <Directory /var/www/whatsapp-api/public>
         Options -Indexes +FollowSymLinks
         AllowOverride All
         Require all granted
@@ -549,31 +550,16 @@ EXIT;
 
 ---
 
-## 🚀 Comandos de Ejecución
+## 🚀 Configuración de PM2 (Producción)
 
-### Ejecutar migraciones
-
-```bash
-php artisan migrate
-```
-
-### Ejecutar servidor Node.js con PM2 (Recomendado para Producción)
-
-#### Instalar PM2 globalmente
-
-```bash
-# Instalar PM2 globalmente
-npm install -g pm2
-```
-
-#### Crear archivo de configuración PM2
+### Crear archivo de configuración PM2
 
 ```bash
 # Crear archivo ecosystem.config.js en el directorio del proyecto
 nano ecosystem.config.js
 ```
 
-#### Contenido del archivo ecosystem.config.js
+### Contenido del archivo ecosystem.config.js
 
 ```javascript
 module.exports = {
@@ -599,7 +585,7 @@ module.exports = {
 };
 ```
 
-#### Crear directorio de logs
+### Crear directorio de logs
 
 ```bash
 # Crear directorio para logs de PM2
@@ -607,7 +593,7 @@ sudo mkdir -p /var/log/pm2
 sudo chown -R $USER:$USER /var/log/pm2
 ```
 
-#### Comandos de PM2
+### Comandos de PM2
 
 ```bash
 # Iniciar aplicación con PM2
@@ -641,7 +627,7 @@ pm2 startup
 # Ejemplo: sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp $HOME
 ```
 
-#### Monitoreo con PM2
+### Monitoreo con PM2
 
 ```bash
 # Monitor en tiempo real
@@ -652,6 +638,16 @@ pm2 show whatsapp-api
 
 # Recargar aplicación sin downtime
 pm2 reload whatsapp-api
+```
+
+---
+
+## 🛠️ Comandos de Ejecución
+
+### Ejecutar migraciones
+
+```bash
+php artisan migrate
 ```
 
 ### Ejecutar servidor Node.js (Desarrollo)

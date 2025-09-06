@@ -1,0 +1,3 @@
+<?php $__currentLoopData = $phonebooks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $phonebook): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+  <option value="<?php echo e($phonebook->id); ?>"><?php echo e($phonebook->name); ?> ( <?php echo e($phonebook->contacts_count); ?> Numbers )</option>
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php /**PATH /home/topupgtc/wapi.topupgt.com/resources/views/pages/campaign/phonebook-list.blade.php ENDPATH**/ ?>

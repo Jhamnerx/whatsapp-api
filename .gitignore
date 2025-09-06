@@ -57,7 +57,6 @@ yarn.lock
 !/storage/framework/sessions/.gitkeep
 /storage/framework/testing/*
 !/storage/framework/testing/.gitkeep
-/storage/framework/views/*
 !/storage/framework/views/.gitkeep
 
 # Credentials and sensitive files

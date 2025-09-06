@@ -228,8 +228,8 @@ cd /var/www/
 
 # Clonar el proyecto (reemplaza con tu repositorio)
 sudo git clone https://github.com/tu-usuario/whatsapp-api.git
-sudo chown -R $USER:$USER whatsapp-api
-cd whatsapp-api
+sudo chown -R $USER:$USER /var/www/html/whatsapp-api
+cd /var/www/html/whatsapp-api
 ```
 
 ### 2. Instalar dependencias de PHP
@@ -251,7 +251,7 @@ sudo npm install --unsafe-perm=true
 
 ### 4. Configurar el proyecto
 
-```bash
+````bash
 # Copiar archivo de configuración
 cp .env.example .env
 
@@ -264,7 +264,7 @@ php artisan key:generate
 # Para Nginx (Ubuntu)
 sudo chown -R www-data:www-data storage bootstrap/cache
 
-# Para Nginx (AlmaLinux)  
+# Para Nginx (AlmaLinux)
 sudo chown -R nginx:nginx storage bootstrap/cache
 
 # Para Apache (AlmaLinux)
@@ -272,8 +272,9 @@ sudo chown -R apache:apache storage bootstrap/cache
 
 # Permisos generales
 sudo chmod -R 775 storage bootstrap/cache
-```
-```
+````
+
+````
 
 ### 5. Configurar base de datos
 
@@ -286,7 +287,7 @@ php artisan migrate
 
 # Ejecutar seeders (si existen)
 php artisan db:seed
-```
+````
 
 ---
 
@@ -578,23 +579,23 @@ nano ecosystem.config.js
 module.exports = {
   apps: [
     {
-      name: 'whatsapp-api',
-      script: 'server.js',
-      cwd: '/var/www/whatsapp-api',
+      name: "whatsapp-api",
+      script: "server.js",
+      cwd: "/var/www/whatsapp-api",
       instances: 1,
       autorestart: true,
       watch: false,
-      max_memory_restart: '1G',
+      max_memory_restart: "1G",
       env: {
-        NODE_ENV: 'production',
-        PORT: 3000
+        NODE_ENV: "production",
+        PORT: 3000,
       },
-      error_file: '/var/log/pm2/whatsapp-api-error.log',
-      out_file: '/var/log/pm2/whatsapp-api-out.log',
-      log_file: '/var/log/pm2/whatsapp-api.log',
-      time: true
-    }
-  ]
+      error_file: "/var/log/pm2/whatsapp-api-error.log",
+      out_file: "/var/log/pm2/whatsapp-api-out.log",
+      log_file: "/var/log/pm2/whatsapp-api.log",
+      time: true,
+    },
+  ],
 };
 ```
 

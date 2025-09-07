@@ -8,7 +8,7 @@ const {
   isExistsEqualCommand,
   isExistsContainCommand,
   getUrlWebhook,
-} = require("../lib/helper");
+} = require("../database/model");
 
 // Función para asegurar codificación UTF-8 correcta
 const ensureUtf8 = (str) => {

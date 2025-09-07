@@ -5,7 +5,7 @@
                    <img src="{{ asset('assets/images/logo-icon.png') }}" class="logo-icon" alt="logo icon">
                </div>
                <div>
-                   <h4 class="logo-text">WABA</h4>
+                   <h4 class="logo-text">WHATSAPP</h4>
                </div>
                <div class="toggle-icon ms-auto"> <i class="bi bi-list"></i>
                </div>
@@ -116,10 +116,10 @@
                            </li>
                            <li class="{{ request()->is('admin.manage-users') ? 'active' : '' }}">
                                <a href="{{ route('admin.manage-users') }}">
-                                <i class="bi bi-circle"></i>
-                               Manage User</a>
+                                   <i class="bi bi-circle"></i>
+                                   Manage User</a>
                            </li>
-                          
+
                        </ul>
                    </li>
                @endif

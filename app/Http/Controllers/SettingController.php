@@ -62,45 +62,23 @@ class SettingController extends Controller
         $data = json_decode(json_encode($request->database));
         $error_message = null;
         try {
-            // Manejar contraseña nula, vacía o string 'null'
-            $password = $data->password ?? '';
-            if (is_null($password) || $password === 'null' || $password === '' || $password === 'undefined') {
-                $password = '';
-            }
-
-            $db = new \mysqli($data->host, $data->username, $password, $data->database);
+            $db = new \mysqli($data->host, $data->username, $data->password, $data->database);
             $error_message = $db->connect_errno ? 'Connection Failed .' . $db->connect_error : $error_message;
         } catch (\Throwable $th) {
-            $error_message = $th->getMessage();
-            Log::error('Database connection error: ' . $th->getMessage());
-            // $error_message = 'Connection failed';
+            $error_message = 'Connection failed';
         }
         return response()->json(['status' => $error_message ?? 'Success', 'error' => $error_message === null ? false : true,]);
     }
 
     public function install(Request $request)
     {
-        // Debug log para rastrear el problema
-        Log::info('Install method called', [
-            'method' => $request->method(),
-            'url' => $request->url(),
-            'fullUrl' => $request->fullUrl(),
-            'headers' => $request->headers->all(),
-            'app_installed' => env('APP_INSTALLED')
-        ]);
-
         if (env('APP_INSTALLED') === true) {
-            Log::info('App already installed, redirecting to home');
             return redirect('/');
         }
-
         if ($request->method() === 'POST') {
-            Log::info('Processing POST request for installation');
             $request->validate([
-                'database.host' => 'string|required',
-                'database.username' => 'string|required',
-                'database.password' => 'string|nullable',
-                'database.database' => 'string|required',
+                'database.*' =>
+                'string|required',
                 //'licensekey' => 'required', 
                 //'buyeremail' =>'required|email', 
                 'admin.username' => 'required',
@@ -109,14 +87,6 @@ class SettingController extends Controller
             ]);
             /** CREATE DATABASE CONNECTION STARTS **/
             $db_params = $request->input('database');
-
-            // Manejar contraseña nula, vacía o string 'null'
-            $password = $db_params['password'] ?? '';
-            if (is_null($password) || $password === 'null' || $password === '' || $password === 'undefined') {
-                $password = '';
-            }
-            $db_params['password'] = $password;
-
             Config::set(
                 'database.connections.mysql',
                 array_merge(config('database.connections.mysql'), $db_params)
@@ -126,7 +96,6 @@ class SettingController extends Controller
                 DB::connection()->getPdo();
             } catch (\Exception $e) {
                 Log::error($e->getMessage());
-                Log::info('error: ' . $e->getMessage());
                 $validator = Validator::make($request->all(), [])->errors()->add('Database', $e->getMessage());
                 return back()->withErrors($validator)->withInput();
             }
@@ -185,68 +154,22 @@ class SettingController extends Controller
             return redirect()->route('home');
         }
         // get method 
-        $mysql_user_version = ['distrib' => 'mysql', 'version' => null, 'compatible' => false,];
-
-        // Método 1: Intentar obtener versión usando la configuración de Laravel
-        try {
-            // Intentar usar la conexión de Laravel si ya está configurada
-            if (config('database.connections.mysql.host')) {
-                $version = \DB::connection('mysql')->select('SELECT VERSION() as version')[0]->version;
-            } else {
-                // Fallback usando credenciales del .env
-                $db_host = env('DB_HOST', 'localhost');
-                $db_port = env('DB_PORT', '3306');
-                $db_username = env('DB_USERNAME', 'root');
-                $db_password = env('DB_PASSWORD', '');
-
-                $dsn = "mysql:host={$db_host};port={$db_port}";
-                $pdo = new \PDO($dsn, $db_username, $db_password);
-                $version = $pdo->query('SELECT VERSION()')->fetchColumn();
-            }
-
-            if ($version) {
-                // Extraer versión numérica (ej: "8.0.43-0ubuntu0.22.04.1" -> "8.0.43")
-                if (preg_match('/^(\d+\.\d+(?:\.\d+)?)/', $version, $matches)) {
-                    $mysql_user_version['version'] = $matches[1];
-                    $mysql_user_version['distrib'] = (stripos($version, 'mariadb') !== false) ? 'mariadb' : 'mysql';
-
-                    // Verificar compatibilidad según el tipo de base de datos
-                    if ($mysql_user_version['distrib'] == 'mysql') {
-                        $mysql_user_version['compatible'] = version_compare($mysql_user_version['version'], '5.6', '>=');
-                    } else {
-                        $mysql_user_version['compatible'] = version_compare($mysql_user_version['version'], '10.0', '>=');
-                    }
+        $mysql_user_version = ['distrib' => '', 'version' => null, 'compatible' => false,];
+        if (function_exists('exec') || function_exists('shell_exec')) {
+            $mysqldump_v = function_exists('exec') ? exec('mysqldump --version') : shell_exec('mysqldump --version');
+            if ($mysqld = str_extract($mysqldump_v, '/Distrib (?P.+),/i')) {
+                $destrib = $mysqld['destrib'] ?? null;
+                $mysqld = explode('-', mb_strtolower($destrib), 2);
+                $mysql_user_version['distrib'] = $mysqld[1] ?? 'mysql';
+                $mysql_user_version['version'] = $mysqld[0];
+                if ($mysql_user_version['distrib'] == 'mysql' && $mysql_user_version['version'] >= 5.6) {
+                    $mysql_user_version['compatible'] = true;
+                } elseif ($mysql_user_version['distrib'] == 'mariadb' && $mysql_user_version['version'] >= 10) {
+                    $mysql_user_version['compatible'] = true;
                 }
-            }
-        } catch (\Exception $e) {
-            // Si falla la conexión directa, intentar con comandos del sistema
-            if (function_exists('exec') || function_exists('shell_exec')) {
-                // Intentar mysql --version primero
-                $mysql_v = function_exists('exec') ? exec('mysql --version 2>/dev/null') : shell_exec('mysql --version 2>/dev/null');
-
-                if (!$mysql_v) {
-                    // Fallback a mysqldump --version
-                    $mysql_v = function_exists('exec') ? exec('mysqldump --version 2>/dev/null') : shell_exec('mysqldump --version 2>/dev/null');
-                }
-
-                if ($mysql_v && preg_match('/(\d+\.\d+(?:\.\d+)?)/', $mysql_v, $matches)) {
-                    $mysql_user_version['version'] = $matches[1];
-                    $mysql_user_version['distrib'] = (stripos($mysql_v, 'mariadb') !== false) ? 'mariadb' : 'mysql';
-
-                    if ($mysql_user_version['distrib'] == 'mysql' && version_compare($mysql_user_version['version'], '5.6', '>=')) {
-                        $mysql_user_version['compatible'] = true;
-                    } elseif ($mysql_user_version['distrib'] == 'mariadb' && version_compare($mysql_user_version['version'], '10.0', '>=')) {
-                        $mysql_user_version['compatible'] = true;
-                    }
-                }
-            }
-
-            // Si nada funciona, asumir compatible para permitir continuar la instalación
-            if (!$mysql_user_version['version']) {
-                $mysql_user_version['version'] = 'Desconocida';
-                $mysql_user_version['compatible'] = true; // Permitir continuar
             }
         }
+
         $requirements = [
             'php' => [
                 'version' => "8.0",

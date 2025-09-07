@@ -25,6 +25,7 @@ class UserSeeder extends Seeder
             'active_subscription' => 'lifetime',
             'password' => bcrypt('admin'),
             'api_key' => Str::random(15),
+            'level' => 'admin',
             'chunk_blast' => 100
         ];
 

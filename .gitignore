@@ -45,7 +45,6 @@ yarn.lock
 !/bootstrap/cache/.gitkeep
 /storage/app/*
 !/storage/app/.gitkeep
-!/storage/app/public/
 /storage/framework/cache/*
 !/storage/framework/cache/.gitkeep
 /storage/framework/sessions/*
@@ -60,12 +59,6 @@ yarn.lock
 *.key
 *.p12
 *.pfx
-
-# WhatsApp API specific
-/server/database/sessions/
-/server/database/auth/
-*.data.json
-session-*.json
 
 # Backup files
 *.bak
@@ -95,5 +88,3 @@ deployment.md
 
 # Custom
 /tmp/
-/public/storage
-/public/vendor

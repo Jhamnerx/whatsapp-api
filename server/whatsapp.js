@@ -73,7 +73,6 @@ const connectToWhatsApp = async (token, io = null) => {
     version: version,
     browser: ["WABOT", "Chrome", "103.0.5060.114"],
     logger: logger,
-    printQRInTerminal: true,
     patchMessageBeforeSending: (message) => {
       const requiresBusinessCompat = Boolean(
         message?.["buttonsMessage"] ||
@@ -507,23 +506,53 @@ async function sendListMessage(
   title,
   buttonText
 ) {
+  console.log("sendListMessage parameters:", {
+    token,
+    to,
+    sections: JSON.stringify(sections, null, 2),
+    text,
+    footer,
+    title,
+    buttonText,
+  });
+
   try {
-    // Estructura correcta para mensajes de lista en Baileys
+    // Verificar si sections tiene la estructura correcta
+    const validSections = Array.isArray(sections) ? sections : [sections];
+
+    // Estructura básica para listas en Baileys
     const listMessage = {
       text: text,
       footer: footer,
       title: title,
       buttonText: buttonText,
-      sections: [sections],
+      sections: validSections,
     };
 
+    console.log(
+      "Final listMessage structure:",
+      JSON.stringify(listMessage, null, 2)
+    );
+
+    // Enviar directamente como listMessage
     const result = await sock[token].sendMessage(formatReceipt(to), {
       listMessage: listMessage,
     });
     return result;
   } catch (error) {
-    console.log(error);
-    return false;
+    console.log("Error in sendListMessage:", error);
+
+    // Fallback: enviar solo el texto si la lista falla
+    try {
+      console.log("Attempting fallback to text message...");
+      const textResult = await sock[token].sendMessage(formatReceipt(to), {
+        text: text,
+      });
+      return textResult;
+    } catch (fallbackError) {
+      console.log("Fallback also failed:", fallbackError);
+      return false;
+    }
   }
 }
 async function fetchGroups(token) {

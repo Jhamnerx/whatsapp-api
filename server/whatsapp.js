@@ -508,21 +508,18 @@ async function sendListMessage(
   buttonText
 ) {
   try {
-    const messageOptions = {
+    // Estructura correcta para mensajes de lista en Baileys
+    const listMessage = {
       text: text,
       footer: footer,
       title: title,
       buttonText: buttonText,
       sections: [sections],
-      viewOnce: true,
     };
-    const result = await sock[token].sendMessage(
-      formatReceipt(to),
-      messageOptions,
-      {
-        ephemeralExpiration: 604800,
-      }
-    );
+
+    const result = await sock[token].sendMessage(formatReceipt(to), {
+      listMessage: listMessage,
+    });
     return result;
   } catch (error) {
     console.log(error);

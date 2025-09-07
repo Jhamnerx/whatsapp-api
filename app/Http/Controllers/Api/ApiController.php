@@ -141,26 +141,6 @@ class ApiController extends Controller
             return self::validateparams($request);
         }
 
-        // Convertir array a formato de WhatsApp después de la validación
-        if (is_array($request->list)) {
-            // Convertir array simple a formato de lista de WhatsApp
-            $listItems = [];
-            foreach ($request->list as $index => $item) {
-                $listItems[] = [
-                    'title' => $item,
-                    'description' => '',
-                    'rowId' => 'option_' . ($index + 1)
-                ];
-            }
-
-            $whatsappList = [
-                'title' => $request->name ?? 'Lista',
-                'rows' => $listItems
-            ];
-
-            $request->merge(['list' => json_encode($whatsappList)]);
-        }
-
         $receivers = explode('|', $request->number);
         $receivers = array_unique($receivers);
         $success = 0;

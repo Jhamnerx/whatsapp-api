@@ -22,25 +22,7 @@ class NumberSeeder extends Seeder
                 'body' => '6282298859671',
                 'webhook' => '',
                 'status' => 'Disconnect',
-                'api_key' => Str::random(32),
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'user_id' => 1,
-                'body' => '6281284838163',
-                'webhook' => '',
-                'status' => 'Disconnect',
-                'api_key' => Str::random(32),
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'user_id' => 1,
-                'body' => '6281511684195',
-                'webhook' => '',
-                'status' => 'Disconnect',
-                'api_key' => Str::random(32),
+                'api_key' => Str::random(16),
                 'created_at' => now(),
                 'updated_at' => now()
             ]

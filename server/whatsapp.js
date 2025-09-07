@@ -517,36 +517,54 @@ async function sendListMessage(
   });
 
   try {
-    // Verificar si sections tiene la estructura correcta
-    const validSections = Array.isArray(sections) ? sections : [sections];
+    // En Baileys 6.0+, las listas necesitan un formato diferente
+    // Convertir la estructura de lista a botones o texto numerado
 
-    // Estructura básica para listas en Baileys
-    const listMessage = {
-      text: text,
-      footer: footer,
-      title: title,
-      buttonText: buttonText,
-      sections: validSections,
-    };
+    let options = [];
+    if (Array.isArray(sections)) {
+      // Si sections es un array, buscar rows en cada sección
+      sections.forEach((section) => {
+        if (section.rows && Array.isArray(section.rows)) {
+          options = options.concat(section.rows);
+        }
+      });
+    } else if (sections.rows && Array.isArray(sections.rows)) {
+      // Si sections es un objeto con rows
+      options = sections.rows;
+    }
 
-    console.log(
-      "Final listMessage structure:",
-      JSON.stringify(listMessage, null, 2)
-    );
+    console.log("Extracted options:", options);
 
-    // Enviar directamente como listMessage
+    if (options.length === 0) {
+      // Si no hay opciones, enviar solo texto
+      console.log("No list options found, sending as text message");
+      const result = await sock[token].sendMessage(formatReceipt(to), {
+        text: `${text}\n\n${footer}`,
+      });
+      return result;
+    }
+
+    // Para Baileys 6.0+, usar mensaje de texto numerado en lugar de lista
+    let textWithOptions = `${text}\n\n`;
+    options.forEach((option, index) => {
+      const optionText = option.title || option.displayText || option;
+      textWithOptions += `${index + 1}. ${optionText}\n`;
+    });
+    textWithOptions += `\n${footer}`;
+
+    console.log("Sending as numbered text message");
     const result = await sock[token].sendMessage(formatReceipt(to), {
-      listMessage: listMessage,
+      text: textWithOptions,
     });
     return result;
   } catch (error) {
     console.log("Error in sendListMessage:", error);
 
-    // Fallback: enviar solo el texto si la lista falla
+    // Fallback: enviar solo el texto básico si todo falla
     try {
       console.log("Attempting fallback to text message...");
       const textResult = await sock[token].sendMessage(formatReceipt(to), {
-        text: text,
+        text: `${text}\n\n${footer}`,
       });
       return textResult;
     } catch (fallbackError) {

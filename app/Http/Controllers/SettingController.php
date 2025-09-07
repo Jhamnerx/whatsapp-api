@@ -80,10 +80,22 @@ class SettingController extends Controller
 
     public function install(Request $request)
     {
+        // Debug log para rastrear el problema
+        Log::info('Install method called', [
+            'method' => $request->method(),
+            'url' => $request->url(),
+            'fullUrl' => $request->fullUrl(),
+            'headers' => $request->headers->all(),
+            'app_installed' => env('APP_INSTALLED')
+        ]);
+        
         if (env('APP_INSTALLED') === true) {
+            Log::info('App already installed, redirecting to home');
             return redirect('/');
         }
+        
         if ($request->method() === 'POST') {
+            Log::info('Processing POST request for installation');
             $request->validate([
                 'database.host' => 'string|required',
                 'database.username' => 'string|required',

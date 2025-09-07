@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Device;
 use App\Models\Number;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class NumberSeeder extends Seeder
 {
@@ -21,6 +22,7 @@ class NumberSeeder extends Seeder
                 'body' => '6282298859671',
                 'webhook' => '',
                 'status' => 'Disconnect',
+                'api_key' => Str::random(32),
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -29,6 +31,7 @@ class NumberSeeder extends Seeder
                 'body' => '6281284838163',
                 'webhook' => '',
                 'status' => 'Disconnect',
+                'api_key' => Str::random(32),
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -37,13 +40,14 @@ class NumberSeeder extends Seeder
                 'body' => '6281511684195',
                 'webhook' => '',
                 'status' => 'Disconnect',
+                'api_key' => Str::random(32),
                 'created_at' => now(),
                 'updated_at' => now()
             ]
         ];
 
-       foreach($data as $d){
-           Device::create($d);
-       }
+        foreach ($data as $d) {
+            Device::create($d);
+        }
     }
 }

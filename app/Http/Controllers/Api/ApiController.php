@@ -131,21 +131,21 @@ class ApiController extends Controller
     public function messageList(Request $request)
     {
         $request->merge(['type' => 'list']);
-        
-        // Manejar correctamente el parámetro list para GET y POST
+
+        // Para GET, convertir string separado por comas a array ANTES de la validación
         if ($request->isMethod('get')) {
-            // Para GET, convertir string separado por comas a array
             $request->merge(['list' => explode(',', $request->list)]);
-        } else {
-            // Para POST, si list ya es array, convertir a JSON string para el backend de Node.js
-            if (is_array($request->list)) {
-                $request->merge(['list' => json_encode($request->list)]);
-            }
         }
-        
+
         if (self::validateparams($request) !== true) {
             return self::validateparams($request);
         }
+
+        // Para POST, después de la validación, convertir array a JSON string para el backend de Node.js
+        if ($request->isMethod('post') && is_array($request->list)) {
+            $request->merge(['list' => json_encode($request->list)]);
+        }
+
         $receivers = explode('|', $request->number);
         $receivers = array_unique($receivers);
         $success = 0;

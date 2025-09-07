@@ -222,8 +222,8 @@
                     @endforeach
                 @endif
 
-                <form class="ui grid form m-0" method="post" action="{{ route('settings.install_app') }}"
-                    enctype="multipart/form-data">
+                <form class="ui grid form m-0" method="post" action="/install"
+                    enctype="multipart/form-data" onsubmit="console.log('Form submitted to:', this.action);">
                     @csrf
                     <div class="ui fluid card">
                         <div class="content header">
@@ -428,6 +428,10 @@
                     return this.step == step;
                 },
                 submitForm: function() {
+                    console.log('submitForm called');
+                    console.log('Form action:', $('form').attr('action'));
+                    console.log('Form method:', $('form').attr('method'));
+                    console.log('Form data:', $('form').serialize());
                     $('form').submit()
                 },
                 testDBConnection: function(e) {

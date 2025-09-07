@@ -80,6 +80,15 @@ class SettingController extends Controller
 
     public function install(Request $request)
     {
+        // Log crítico para detectar llegada de requests
+        file_put_contents(storage_path('logs/install_debug.log'), 
+            date('Y-m-d H:i:s') . " - Method: " . $request->method() . 
+            " - URL: " . $request->fullUrl() . 
+            " - IP: " . $request->ip() . 
+            " - User Agent: " . $request->header('User-Agent') . "\n", 
+            FILE_APPEND
+        );
+        
         // Debug log para rastrear el problema
         Log::info('Install method called', [
             'method' => $request->method(),

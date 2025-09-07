@@ -40,11 +40,6 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
-# Build outputs
-/public/mix-manifest.json
-/public/css/
-/public/js/
-
 # Laravel specific
 /bootstrap/cache/*
 !/bootstrap/cache/.gitkeep

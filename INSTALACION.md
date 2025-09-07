@@ -814,10 +814,11 @@ sudo systemctl restart php8.1-fpm
 
 ```bash
 sudo chown -R www-data:www-data /var/www/whatsapp-api  # Ubuntu
-sudo chown -R nginx:nginx /var/www/whatsapp-api        # AlmaLinux
-sudo chmod -R 755 /var/www/whatsapp-api
-sudo chmod -R 775 /var/www/whatsapp-api/storage
-sudo chmod -R 775 /var/www/whatsapp-api/bootstrap/cache
+sudo chown -R nginx:nginx /var/www/html/whatsapp-api        # AlmaLinux
+sudo chmod -R 755 /var/www/html/whatsapp-api
+sudo chmod -R 775 /var/www/html/whatsapp-api/storage/
+sudo chmod -R 775 /var/www/html/whatsapp-api/bootstrap/cache
+chmod 777 storage/* -R
 ```
 
 ### Limpiar caché de Laravel

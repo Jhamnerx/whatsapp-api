@@ -14,14 +14,15 @@ class Kernel extends ConsoleKernel
      * @return void
      */
     protected $commands = [
-        Commands\ScheduleCron::class
+        Commands\ScheduleCron::class,
+        Commands\ClearInstallationCache::class
     ];
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('schedule:cron')->everyFiveMinutes();
         $schedule->command('subscription:check')->daily();
         $schedule->command('start:blast')->everyMinute();
-      //  $schedule->command('schedule:blast')->everyMinute();
+        //  $schedule->command('schedule:blast')->everyMinute();
     }
 
     /**
@@ -31,7 +32,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

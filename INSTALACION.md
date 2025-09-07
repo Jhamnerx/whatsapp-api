@@ -772,6 +772,44 @@ php -m | grep -E "(mysqli|pdo|mbstring|xml|zip|gd|curl|json|openssl)"
 
 ## 🛠️ Solución de Problemas Comunes
 
+### Problemas con Cookies Conflictivas
+
+Si aparecen errores relacionados con cookies de otros sistemas (ej: `blas_pharma_farmacia_y_drogueria_session`):
+
+#### **Solución Rápida - Navegador:**
+
+```bash
+# Opción 1: Usar navegación privada/incógnito
+Ctrl + Shift + N (Chrome/Edge)
+Cmd + Shift + N (Safari)
+
+# Opción 2: Limpiar cookies específicas
+# 1. Presiona F12 → pestaña Application
+# 2. Storage → Cookies → selecciona tu dominio
+# 3. Elimina todas las cookies conflictivas
+```
+
+#### **Desde el servidor:**
+
+```bash
+# Comando personalizado para limpiar todo de una vez
+php artisan install:clear
+
+# O manualmente:
+# Limpiar sesiones de Laravel
+php artisan session:clear
+
+# Limpiar cache completo
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+# Reiniciar servidor web
+sudo systemctl restart nginx    # o apache
+sudo systemctl restart php8.1-fpm
+```
+
 ### Permisos de archivos
 
 ```bash

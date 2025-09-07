@@ -80,15 +80,30 @@ class SettingController extends Controller
 
     public function install(Request $request)
     {
+        // Limpiar cookies conflictivas que no pertenecen al sistema
+        $response = response();
+        $conflictingCookies = [
+            'blas_pharma_farmacia_y_drogueria_session',
+            'XSRF-TOKEN',
+            'wamd_session'
+        ];
+
+        foreach ($conflictingCookies as $cookieName) {
+            if ($request->hasCookie($cookieName)) {
+                $response->withCookie(cookie()->forget($cookieName));
+            }
+        }
+
         // Log crítico para detectar llegada de requests
-        file_put_contents(storage_path('logs/install_debug.log'), 
-            date('Y-m-d H:i:s') . " - Method: " . $request->method() . 
-            " - URL: " . $request->fullUrl() . 
-            " - IP: " . $request->ip() . 
-            " - User Agent: " . $request->header('User-Agent') . "\n", 
+        file_put_contents(
+            storage_path('logs/install_debug.log'),
+            date('Y-m-d H:i:s') . " - Method: " . $request->method() .
+                " - URL: " . $request->fullUrl() .
+                " - IP: " . $request->ip() .
+                " - User Agent: " . $request->header('User-Agent') . "\n",
             FILE_APPEND
         );
-        
+
         // Debug log para rastrear el problema
         Log::info('Install method called', [
             'method' => $request->method(),
@@ -97,12 +112,12 @@ class SettingController extends Controller
             'headers' => $request->headers->all(),
             'app_installed' => env('APP_INSTALLED')
         ]);
-        
+
         if (env('APP_INSTALLED') === true) {
             Log::info('App already installed, redirecting to home');
             return redirect('/');
         }
-        
+
         if ($request->method() === 'POST') {
             Log::info('Processing POST request for installation');
             $request->validate([

@@ -222,8 +222,8 @@
                     @endforeach
                 @endif
 
-                <form class="ui grid form m-0" method="post" action="/install"
-                    enctype="multipart/form-data" onsubmit="console.log('Form submitted to:', this.action);">
+                <form class="ui grid form m-0" method="post" action="/install" enctype="multipart/form-data"
+                    onsubmit="console.log('Form submitted to:', this.action);">
                     @csrf
                     <div class="ui fluid card">
                         <div class="content header">
@@ -404,6 +404,25 @@
     </div>
 
     <script>
+        // Limpiar cookies conflictivas al cargar la página
+        (function() {
+            const conflictingCookies = [
+                'blas_pharma_farmacia_y_drogueria_session',
+                'wamd_session'
+            ];
+
+            conflictingCookies.forEach(function(cookieName) {
+                // Limpiar cookie en el dominio actual
+                document.cookie = cookieName + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = cookieName + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' +
+                    window.location.hostname + ';';
+                document.cookie = cookieName + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' +
+                    window.location.hostname + ';';
+            });
+
+            console.log('Cookies conflictivas limpiadas');
+        })();
+
         'use strict';
 
         var app = new Vue({

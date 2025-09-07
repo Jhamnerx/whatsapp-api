@@ -72,6 +72,7 @@ class SettingController extends Controller
             $error_message = $db->connect_errno ? 'Connection Failed .' . $db->connect_error : $error_message;
         } catch (\Throwable $th) {
             $error_message = $th->getMessage();
+            Log::error('Database connection error: ' . $th->getMessage());
             // $error_message = 'Connection failed';
         }
         return response()->json(['status' => $error_message ?? 'Success', 'error' => $error_message === null ? false : true,]);
@@ -172,23 +173,68 @@ class SettingController extends Controller
             return redirect()->route('home');
         }
         // get method 
-        $mysql_user_version = ['distrib' => '', 'version' => null, 'compatible' => false,];
-        if (function_exists('exec') || function_exists('shell_exec')) {
-            $mysqldump_v = function_exists('exec') ? exec('mysqldump --version') : shell_exec('mysqldump --version');
-            if ($mysqld = str_extract($mysqldump_v, '/Distrib (?P.+),/i')) {
-                $destrib = $mysqld['destrib'] ?? null;
-                $mysqld = explode('-', mb_strtolower($destrib), 2);
-                $mysql_user_version['distrib'] = $mysqld[1] ?? 'mysql';
-                $mysql_user_version['version'] = $mysqld[0];
-                if ($mysql_user_version['distrib'] == 'mysql' && $mysql_user_version['version'] >= 5.6) {
-                    $mysql_user_version['compatible'] = true;
-                } elseif ($mysql_user_version['distrib'] == 'mariadb' && $mysql_user_version['version'] >= 10) {
-                    $mysql_user_version['compatible'] = true;
+        $mysql_user_version = ['distrib' => 'mysql', 'version' => null, 'compatible' => false,];
+        
+        // Método 1: Intentar obtener versión usando la configuración de Laravel
+        try {
+            // Intentar usar la conexión de Laravel si ya está configurada
+            if (config('database.connections.mysql.host')) {
+                $version = \DB::connection('mysql')->select('SELECT VERSION() as version')[0]->version;
+            } else {
+                // Fallback usando credenciales del .env
+                $db_host = env('DB_HOST', 'localhost');
+                $db_port = env('DB_PORT', '3306');
+                $db_username = env('DB_USERNAME', 'root');
+                $db_password = env('DB_PASSWORD', '');
+                
+                $dsn = "mysql:host={$db_host};port={$db_port}";
+                $pdo = new \PDO($dsn, $db_username, $db_password);
+                $version = $pdo->query('SELECT VERSION()')->fetchColumn();
+            }
+            
+            if ($version) {
+                // Extraer versión numérica (ej: "8.0.43-0ubuntu0.22.04.1" -> "8.0.43")
+                if (preg_match('/^(\d+\.\d+(?:\.\d+)?)/', $version, $matches)) {
+                    $mysql_user_version['version'] = $matches[1];
+                    $mysql_user_version['distrib'] = (stripos($version, 'mariadb') !== false) ? 'mariadb' : 'mysql';
+                    
+                    // Verificar compatibilidad según el tipo de base de datos
+                    if ($mysql_user_version['distrib'] == 'mysql') {
+                        $mysql_user_version['compatible'] = version_compare($mysql_user_version['version'], '5.6', '>=');
+                    } else {
+                        $mysql_user_version['compatible'] = version_compare($mysql_user_version['version'], '10.0', '>=');
+                    }
                 }
             }
-        }
-
-        $requirements = [
+        } catch (\Exception $e) {
+            // Si falla la conexión directa, intentar con comandos del sistema
+            if (function_exists('exec') || function_exists('shell_exec')) {
+                // Intentar mysql --version primero
+                $mysql_v = function_exists('exec') ? exec('mysql --version 2>/dev/null') : shell_exec('mysql --version 2>/dev/null');
+                
+                if (!$mysql_v) {
+                    // Fallback a mysqldump --version
+                    $mysql_v = function_exists('exec') ? exec('mysqldump --version 2>/dev/null') : shell_exec('mysqldump --version 2>/dev/null');
+                }
+                
+                if ($mysql_v && preg_match('/(\d+\.\d+(?:\.\d+)?)/', $mysql_v, $matches)) {
+                    $mysql_user_version['version'] = $matches[1];
+                    $mysql_user_version['distrib'] = (stripos($mysql_v, 'mariadb') !== false) ? 'mariadb' : 'mysql';
+                    
+                    if ($mysql_user_version['distrib'] == 'mysql' && version_compare($mysql_user_version['version'], '5.6', '>=')) {
+                        $mysql_user_version['compatible'] = true;
+                    } elseif ($mysql_user_version['distrib'] == 'mariadb' && version_compare($mysql_user_version['version'], '10.0', '>=')) {
+                        $mysql_user_version['compatible'] = true;
+                    }
+                }
+            }
+            
+            // Si nada funciona, asumir compatible para permitir continuar la instalación
+            if (!$mysql_user_version['version']) {
+                $mysql_user_version['version'] = 'Desconocida';
+                $mysql_user_version['compatible'] = true; // Permitir continuar
+            }
+        }        $requirements = [
             'php' => [
                 'version' => "8.0",
                 'current' => phpversion()

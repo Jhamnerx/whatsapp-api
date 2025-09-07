@@ -4,7 +4,7 @@ Esta guía te ayudará a instalar el sistema WhatsApp API en **Ubuntu** y **Alma
 
 ## 📋 Requisitos del Sistema
 
-- **Node.js**: v19.x
+- **Node.js**: v20.19.4 (recomendado usar NVM)
 - **PHP**: v8.1
 - **Composer**: Última versión
 - **MySQL/MariaDB**: v8.0+ / v10.6+
@@ -21,12 +21,27 @@ Esta guía te ayudará a instalar el sistema WhatsApp API en **Ubuntu** y **Alma
 sudo apt update && sudo apt upgrade -y
 ```
 
-### 2. Instalar Node.js 19
+### 2. Instalar Node.js con NVM
 
 ```bash
-# Instalar Node.js 19 usando NodeSource
-curl -fsSL https://deb.nodesource.com/setup_19.x | sudo -E bash -
-sudo apt-get install -y nodejs
+# Instalar NVM (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+
+# Recargar el perfil del usuario
+source ~/.bashrc
+
+# O si usas zsh
+# source ~/.zshrc
+
+# Verificar instalación de NVM
+nvm --version
+
+# Instalar Node.js v20.19.4
+nvm install 20.19.4
+
+# Usar Node.js v20.19.4 como versión predeterminada
+nvm use 20.19.4
+nvm alias default 20.19.4
 
 # Verificar instalación
 node --version
@@ -109,12 +124,27 @@ sudo dnf update -y
 sudo dnf install -y epel-release
 ```
 
-### 2. Instalar Node.js 19
+### 2. Instalar Node.js con NVM
 
 ```bash
-# Instalar Node.js 19 usando NodeSource
-curl -fsSL https://rpm.nodesource.com/setup_19.x | sudo bash -
-sudo dnf install -y nodejs
+# Instalar NVM (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+
+# Recargar el perfil del usuario
+source ~/.bashrc
+
+# O si usas zsh
+# source ~/.zshrc
+
+# Verificar instalación de NVM
+nvm --version
+
+# Instalar Node.js v20.19.4
+nvm install 20.19.4
+
+# Usar Node.js v20.19.4 como versión predeterminada
+nvm use 20.19.4
+nvm alias default 20.19.4
 
 # Verificar instalación
 node --version
@@ -216,6 +246,34 @@ npm install -g pm2
 
 # Verificar instalación
 pm2 --version
+```
+
+### Comandos Útiles de NVM
+
+```bash
+# Listar versiones de Node.js disponibles
+nvm ls-remote
+
+# Listar versiones instaladas localmente
+nvm ls
+
+# Instalar la versión LTS más reciente
+nvm install --lts
+
+# Cambiar a una versión específica
+nvm use 20.19.4
+
+# Establecer versión predeterminada
+nvm alias default 20.19.4
+
+# Desinstalar una versión
+nvm uninstall 19.x.x
+
+# Mostrar la versión actual en uso
+nvm current
+
+# Mostrar la ruta de instalación de Node.js actual
+nvm which current
 ```
 
 ---
@@ -674,8 +732,17 @@ php artisan serve --host=0.0.0.0 --port=8000
 ### Verificar servicios
 
 ```bash
-# Verificar Node.js
+# Verificar NVM
+nvm --version
+
+# Verificar Node.js (debería mostrar v20.19.4)
 node --version
+
+# Verificar npm
+npm --version
+
+# Verificar versión de Node.js en uso
+nvm current
 
 # Verificar PHP
 php --version

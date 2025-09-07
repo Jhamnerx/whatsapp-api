@@ -113,6 +113,7 @@ class SettingController extends Controller
                 DB::connection()->getPdo();
             } catch (\Exception $e) {
                 Log::error($e->getMessage());
+                Log::info('error: ' . $e->getMessage());
                 $validator = Validator::make($request->all(), [])->errors()->add('Database', $e->getMessage());
                 return back()->withErrors($validator)->withInput();
             }

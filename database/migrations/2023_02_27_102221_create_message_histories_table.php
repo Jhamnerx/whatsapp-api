@@ -22,9 +22,9 @@ class CreateMessageHistoriesTable extends Migration
             $table->string('message');
             $table->json('payload');
             $table->enum('status', ['success', 'failed']);
-            $table->enum('send_by', ['api','web']);
+            $table->enum('send_by', ['api', 'web']);
             $table->string('note')->nullable();
-            
+
             $table->timestamps();
         });
     }

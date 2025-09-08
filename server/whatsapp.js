@@ -509,7 +509,7 @@ async function sendListMessage(
   console.log("sendListMessage parameters:", {
     token,
     to,
-    sections: JSON.stringify(sections, null, 2),
+    sections: sections,
     text,
     footer,
     title,
@@ -517,20 +517,36 @@ async function sendListMessage(
   });
 
   try {
+    // Parsear sections si es un string JSON
+    let parsedSections = sections;
+    if (typeof sections === "string") {
+      try {
+        parsedSections = JSON.parse(sections);
+        console.log("Parsed sections from JSON string:", parsedSections);
+      } catch (parseError) {
+        console.log("Failed to parse sections JSON:", parseError);
+        // Si no se puede parsear, enviar solo texto
+        const result = await sock[token].sendMessage(formatReceipt(to), {
+          text: `${text}\n\n${footer}`,
+        });
+        return result;
+      }
+    }
+
     // En Baileys 6.0+, las listas necesitan un formato diferente
-    // Convertir la estructura de lista a botones o texto numerado
+    // Convertir la estructura de lista a texto numerado
 
     let options = [];
-    if (Array.isArray(sections)) {
-      // Si sections es un array, buscar rows en cada sección
-      sections.forEach((section) => {
+    if (Array.isArray(parsedSections)) {
+      // Si parsedSections es un array, buscar rows en cada sección
+      parsedSections.forEach((section) => {
         if (section.rows && Array.isArray(section.rows)) {
           options = options.concat(section.rows);
         }
       });
-    } else if (sections.rows && Array.isArray(sections.rows)) {
-      // Si sections es un objeto con rows
-      options = sections.rows;
+    } else if (parsedSections.rows && Array.isArray(parsedSections.rows)) {
+      // Si parsedSections es un objeto con rows
+      options = parsedSections.rows;
     }
 
     console.log("Extracted options:", options);
@@ -552,7 +568,7 @@ async function sendListMessage(
     });
     textWithOptions += `\n${footer}`;
 
-    console.log("Sending as numbered text message");
+    console.log("Sending numbered text message:", textWithOptions);
     const result = await sock[token].sendMessage(formatReceipt(to), {
       text: textWithOptions,
     });

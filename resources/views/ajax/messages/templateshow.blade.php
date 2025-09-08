@@ -32,7 +32,7 @@
                   <img src="" alt="Avatar">
                 </div>
                 <div class="name">
-                  <span>WABOT</span>
+                  <span>Zoftware Solutions</span>
                   <span class="status">online</span>
                 </div>
                 <div class="actions more">

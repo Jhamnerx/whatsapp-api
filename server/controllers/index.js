@@ -1,5 +1,5 @@
 /**
- * WABOT - Controlador Principal de API WhatsApp
+ * Controlador Principal de API WhatsApp
  * Desofuscado completamente para mejor mantenimiento y legibilidad
  */
 

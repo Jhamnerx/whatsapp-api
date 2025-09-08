@@ -15,7 +15,7 @@
                     <div class="card shadow rounded-5 overflow-hidden">
                         <div class="card-body p-4 p-sm-5">
                             <h5 class="card-title">Register</h5>
-                            <p class="card-text mb-5">Hi, welcome to WABOT.</p>
+                            <p class="card-text mb-5">Hi, welcome to Zoftware Solutions.</p>
                             <form class="form-body" action="{{ route('register') }}" method="POST">
                                 @csrf
                                 <div class="row g-3">

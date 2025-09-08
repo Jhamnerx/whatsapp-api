@@ -71,7 +71,7 @@ const connectToWhatsApp = async (token, io = null) => {
   );
   sock[token] = makeWASocket({
     version: version,
-    browser: ["WABOT", "Chrome", "103.0.5060.114"],
+    browser: ["Zoftware Solutions", "Chrome", "103.0.5060.114"],
     logger: logger,
     patchMessageBeforeSending: (message) => {
       const requiresBusinessCompat = Boolean(

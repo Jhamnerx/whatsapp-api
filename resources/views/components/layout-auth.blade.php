@@ -1,13 +1,13 @@
 <head>
-   
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="WABOT is Whatsapp Multi Device API gateway service for sending and receiving messages, notification, scheduler, reminder, tracking and store platform for your business">
+    <meta name="description"
+        content="Zoftware Solutions is Whatsapp Multi Device API gateway service for sending and receiving messages, notification, scheduler, reminder, tracking and store platform for your business">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <meta name="keywords"
-        content="waapi,wa gateway, whatsapp blast, whatsapp api gateway, whatsapp business, ">
-    <meta name="author" content="WABOT">
+    <meta name="keywords" content="waapi,wa gateway, whatsapp blast, whatsapp api gateway, whatsapp business, ">
+    <meta name="author" content="Zoftware Solutions">
     <!-- The above 6 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
     <!-- Title -->

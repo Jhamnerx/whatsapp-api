@@ -19,7 +19,103 @@ const { IncomingMessage } = require("./controllers/incomingMessage");
 const { formatReceipt } = require("./lib/helper");
 const axios = require("axios");
 const MAIN_LOGGER = require("./lib/pino");
+const { log } = require("console");
 const logger = MAIN_LOGGER.child({});
+
+// Función para hacer log del evento messages.update
+const logMessageUpdate = (messageUpdate) => {
+  try {
+    console.log("=== MESSAGE UPDATE EVENT ===");
+    console.log("Timestamp:", new Date().toISOString());
+    console.log("Raw messageUpdate type:", typeof messageUpdate);
+
+    // Verificar si messageUpdate es un array
+    if (Array.isArray(messageUpdate)) {
+      console.log("Number of updated messages:", messageUpdate.length);
+
+      messageUpdate.forEach((update, index) => {
+        console.log(`\n--- Message ${index + 1} ---`);
+
+        if (update.key) {
+          console.log("Message ID:", update.key.id);
+          console.log("Remote JID:", update.key.remoteJid);
+          console.log("From Me:", update.key.fromMe);
+
+          // Extraer número de teléfono limpio
+          const cleanNumber = update.key.remoteJid
+            .replace(/@.*$/g, "")
+            .split(":")[0];
+          console.log("Clean Number:", cleanNumber);
+        }
+
+        if (update.update) {
+          const updateFields = Object.keys(update.update);
+          console.log("Update fields:", updateFields);
+
+          // Log específico para status updates con descripción
+          if (update.update.status !== undefined) {
+            const statusDescriptions = {
+              0: "PENDING - Enviando",
+              1: "SERVER_ACK - Enviado al servidor",
+              2: "DELIVERY_ACK - Entregado",
+              3: "READ - Leído",
+              4: "PLAYED - Reproducido (audio/video)",
+            };
+
+            const statusDesc =
+              statusDescriptions[update.update.status] ||
+              `Unknown status: ${update.update.status}`;
+            console.log(
+              `Status update: ${update.update.status} (${statusDesc})`
+            );
+          }
+
+          // Log de reacciones
+          if (update.update.reactions) {
+            console.log(
+              "Reactions update:",
+              JSON.stringify(update.update.reactions, null, 2)
+            );
+          }
+
+          // Log de cambios en contenido del mensaje
+          if (update.update.message) {
+            console.log("Message content update detected");
+            console.log(
+              "Mensaje: ",
+              JSON.stringify(update.update.message, null, 2)
+            );
+          }
+
+          // Log de messageStubType (mensajes del sistema)
+          if (update.update.messageStubType) {
+            console.log("Message stub type:", update.update.messageStubType);
+          }
+
+          // Log de starred (mensajes destacados)
+          if (update.update.starred !== undefined) {
+            console.log("Starred update:", update.update.starred);
+          }
+
+          // Log completo del update para debugging
+          console.log(
+            "Full update object:",
+            JSON.stringify(update.update, null, 2)
+          );
+        }
+      });
+    } else {
+      console.log("messageUpdate is not an array, structure:");
+      console.log(JSON.stringify(messageUpdate, null, 2));
+    }
+
+    console.log("=== END MESSAGE UPDATE ===\n");
+  } catch (error) {
+    console.log("Error logging message update:", error);
+    console.log("messageUpdate parameter:", messageUpdate);
+  }
+};
+
 const connectToWhatsApp = async (token, io = null) => {
   if (typeof qrcode[token] !== "undefined") {
     if (io !== null) {
@@ -114,6 +210,9 @@ const connectToWhatsApp = async (token, io = null) => {
     },
   });
   sock[token].ev.process(async (events) => {
+    console.log("events: ");
+    console.log(events);
+
     if (events["connection.update"]) {
       const update = events["connection.update"];
       const {
@@ -197,10 +296,71 @@ const connectToWhatsApp = async (token, io = null) => {
         delete qrcode[token];
       }
     }
+
     if (events["messages.upsert"]) {
+      console.log(
+        "mensaje: ",
+        JSON.stringify(events["messages.upsert"], null, 2)
+      );
       const messageUpsert = events["messages.upsert"];
       IncomingMessage(messageUpsert, sock[token]);
     }
+
+    if (events["messages.update"]) {
+      const messageUpdate = events["messages.update"];
+
+      // Log detallado de key y update en formato JSON crudo
+      console.log("=== MESSAGES.UPDATE RAW DATA ===");
+      messageUpdate.forEach((update, index) => {
+        console.log(`--- Update ${index + 1} ---`);
+        console.log("KEY (raw JSON):", JSON.stringify(update.key, null, 2));
+        console.log(
+          "UPDATE (raw JSON):",
+          JSON.stringify(update.update, null, 2)
+        );
+
+        // Verificar si es un mensaje entrante que debería procesarse
+        if (update.key && !update.key.fromMe && update.update.message) {
+          console.log(
+            "🚨 MENSAJE ENTRANTE DETECTADO EN UPDATE (no en upsert!)"
+          );
+          console.log("Remote JID:", update.key.remoteJid);
+          console.log("Message ID:", update.key.id);
+          console.log(
+            "Message content:",
+            JSON.stringify(update.update.message, null, 2)
+          );
+
+          // Crear un objeto compatible con messages.upsert para procesarlo
+          const syntheticUpsert = {
+            messages: [
+              {
+                key: update.key,
+                message: update.update.message,
+                messageTimestamp: Date.now() / 1000,
+                pushName: "Unknown", // No tenemos pushName en update
+              },
+            ],
+            type: "notify",
+          };
+
+          console.log("🔄 Procesando mensaje como IncomingMessage...");
+          try {
+            IncomingMessage(syntheticUpsert, sock[token]).catch((error) => {
+              console.log("❌ Error procesando mensaje:", error);
+            });
+            console.log("✅ Mensaje enviado para procesamiento");
+          } catch (error) {
+            console.log("❌ Error enviando mensaje:", error);
+          }
+        }
+      });
+      console.log("=== END RAW DATA ===");
+
+      // Llamar a la función de logging detallado
+      logMessageUpdate(messageUpdate);
+    }
+
     if (events["creds.update"]) {
       const creds = events["creds.update"];
       saveCreds(creds);

@@ -19,7 +19,7 @@ class CreateMessageHistoriesTable extends Migration
             $table->foreignId('device_id')->constrained('devices')->onDelete('cascade');
             $table->string('number');
             $table->string('type');
-            $table->string('message');
+            $table->text('message');
             $table->json('payload');
             $table->enum('status', ['success', 'failed']);
             $table->enum('send_by', ['api', 'web']);

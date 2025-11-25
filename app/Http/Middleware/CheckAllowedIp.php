@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CheckAllowedIp
 {
@@ -53,7 +54,20 @@ class CheckAllowedIp
             }
         }
 
-        // Si no está autorizado, retornar error 403
+        // Si no está autorizado, registrar en log y retornar error 403
+        Log::warning('Intento de acceso no autorizado a API', [
+            'ip' => $clientIp,
+            'endpoint' => $request->path(),
+            'method' => $request->method(),
+            'user_agent' => $request->userAgent(),
+            'origin' => $request->header('Origin'),
+            'referer' => $request->header('Referer'),
+            'x_forwarded_for' => $request->header('X-Forwarded-For'),
+            'x_real_ip' => $request->header('X-Real-IP'),
+            'timestamp' => now()->toDateTimeString(),
+            'api_key' => $request->input('api_key') ? substr($request->input('api_key'), 0, 8) . '...' : 'N/A',
+        ]);
+
         return response()->json([
             'status' => false,
             'message' => 'Acceso denegado. IP no autorizada.',

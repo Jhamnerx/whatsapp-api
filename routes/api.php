@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('checkApiKey')->group(function () {
+Route::middleware(['checkApiKey', 'checkAllowedIp'])->group(function () {
 
     Route::post('/send-message', [ApiController::class, 'messageText']);
     // for get

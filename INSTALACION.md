@@ -287,7 +287,7 @@ nvm which current
 cd /var/www/
 
 # Clonar el proyecto (reemplaza con tu repositorio)
-sudo git clone https://github.com/tu-usuario/whatsapp-api.git
+sudo git clone https://github.com/Jhamnerx/whatsapp-api
 sudo chown -R $USER:$USER whatsapp-api
 cd whatsapp-api
 ```
@@ -333,6 +333,13 @@ sudo chown -R apache:apache storage bootstrap/cache
 
 # Permisos generales
 sudo chmod -R 775 storage bootstrap/cache
+chmod -R 777 storage/
+chmod 777 storage/* -R
+chmod -R 777 public/images/
+chmod -R 777 vendor/
+chmod -R 777 bootstrap/cache
+chmod -R 777 storage/framework/views
+chmod -R 777 storage/framework/cache
 ```
 
 ### 6. Configurar base de datos
@@ -593,10 +600,13 @@ mysql -u root -p
 -- Crear base de datos
 CREATE DATABASE whatsapp_api CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- Crear usuario
-CREATE USER 'whatsapp_user'@'localhost' IDENTIFIED BY 'tu_password_seguro';
+-- Cambiar contraseña del usuario root
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Mq=994p39@0w';
 
--- Otorgar permisos
+-- Crear usuario adicional (opcional)
+CREATE USER 'whatsapp_user'@'localhost' IDENTIFIED BY 'Mq=994p39@0w';
+
+-- Otorgar permisos al usuario adicional
 GRANT ALL PRIVILEGES ON whatsapp_api.* TO 'whatsapp_user'@'localhost';
 
 -- Aplicar cambios
@@ -659,6 +669,7 @@ pm2 start ecosystem.config.js
 
 # O iniciar directamente el archivo
 pm2 start server.js --name "whatsapp-api"
+pm2 restart whatsapp-api --cron-restart="0 */4 * * *"
 
 # Ver estado de las aplicaciones
 pm2 status
@@ -814,10 +825,10 @@ sudo systemctl restart php8.1-fpm
 
 ```bash
 sudo chown -R www-data:www-data /var/www/whatsapp-api  # Ubuntu
-sudo chown -R nginx:nginx /var/www/html/whatsapp-api        # AlmaLinux
-sudo chmod -R 755 /var/www/html/whatsapp-api
-sudo chmod -R 775 /var/www/html/whatsapp-api/storage/
-sudo chmod -R 775 /var/www/html/whatsapp-api/bootstrap/cache
+sudo chown -R nginx:nginx /var/www/whatsapp-api
+sudo chmod -R 755 /var/www/whatsapp-api
+sudo chmod -R 775 /var/www/whatsapp-api/storage/
+sudo chmod -R 775 /var/www/whatsapp-api/bootstrap/cache
 chmod 777 storage/* -R
 ```
 

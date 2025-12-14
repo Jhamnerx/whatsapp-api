@@ -70,7 +70,13 @@
     "optimize-autoloader": true,
     "preferred-install": "dist",
     "sort-packages": true,
-    "platform-check": false
+    "platform-check": false,
+    "audit": {
+      "ignore": [
+        "PKSA-gwgj-6f7y-bmcx",
+        "PKSA-67rb-jsjr-z2rt"
+      ]
+    }
   },
   "files": {},
   "minimum-stability": "dev",

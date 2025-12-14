@@ -14,8 +14,8 @@ class AddColumnToAutorepliesTable extends Migration
     public function up()
     {
         Schema::table('autoreplies', function (Blueprint $table) {
-            $table->enum('type_keyword',['Equal','Contain'])->after('keyword')->default('Equal');
-            $table->enum('reply_when',['Group','Personal','All'])->after('reply')->default('All');
+            $table->enum('type_keyword', ['Equal', 'Contain'])->after('keyword')->default('Equal');
+            $table->enum('reply_when', ['Group', 'Personal', 'All'])->after('reply')->default('All');
         });
     }
 

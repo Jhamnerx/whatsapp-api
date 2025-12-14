@@ -6,7 +6,8 @@
                                            @if (Session::has('selectedDevice') && Session::get('selectedDevice')['device_body'] == $device->body)
                                                {{-- make variable selected true --}}
                                                <option value="{{ $device->id }}" selected>{{ $device->body }}
-                                                   ({{ $device->status }})</option>
+                                                   ({{ $device->status }})
+                                               </option>
                                            @else
                                                <option value="{{ $device->id }}">{{ $device->body }}
                                                    ({{ $device->status }})</option>

@@ -16,7 +16,7 @@
     "laravel/sanctum": "^2.11",
     "laravel/tinker": "^2.5",
     "maatwebsite/excel": "^3.1",
-    "unisharp/laravel-filemanager": "^2.4"
+    "unisharp/laravel-filemanager": "2.6.3"
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "*",
